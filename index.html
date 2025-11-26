@@ -4,20 +4,62 @@
     <title>EEG Live Web Graph</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body style="font-family: Arial; padding: 20px;">
     <h1>🧠 EEG Live Web Graph</h1>
 
-    <!-- Hyperlinks to start and stop simulation -->
-    <a href="http://127.0.0.1:8000/start" target="_blank">Start Simulation</a><br>
-    <a href="http://127.0.0.1:8000/stop" target="_blank">Stop Simulation</a><br>
-    <a href="http://127.0.0.1:8000/set_activity/rest" target="_blank">Set Activity to Rest</a><br>
-    <a href="http://127.0.0.1:8000/set_activity/walking" target="_blank">Set Activity to Walking</a><br>
-    <a href="http://127.0.0.1:8000/set_activity/running" target="_blank">Set Activity to Running</a><br>
+    <button onclick="startSim()">Start</button>
+    <button onclick="stopSim()">Stop</button>
+    <button onclick="setActivity('rest')">Rest</button>
+    <button onclick="setActivity('walking')">Walking</button>
+    <button onclick="setActivity('running')">Running</button>
 
     <canvas id="eegChart" width="600" height="300"></canvas>
 
     <script>
-        const api = "127.0.0.1:8000"; // Replace with your backend URL if necessary
+        const api = "http://127.0.0.1:8000"; // Replace with your laptop's IP address 
+
+        // Function to start the EEG simulation by hitting the backend /start API
+        function startSim() {
+            fetch(api + "/start")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);  // Check the response from the backend
+                    alert('Simulation Started');
+                })
+                .catch(error => {
+                    console.log("Error starting simulation:", error);
+                    alert("Error starting simulation.");
+                });
+        }
+
+        // Function to stop the EEG simulation by hitting the backend /stop API
+        function stopSim() {
+            fetch(api + "/stop")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);  // Check the response from the backend
+                    alert('Simulation Stopped');
+                })
+                .catch(error => {
+                    console.log("Error stopping simulation:", error);
+                    alert("Error stopping simulation.");
+                });
+        }
+
+        // Function to set the current activity by calling /set_activity/{mode} API
+        function setActivity(mode) {
+            fetch(api + "/set_activity/" + mode)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);  // Check the activity change response
+                    alert('Activity set to: ' + mode);
+                })
+                .catch(error => {
+                    console.log("Error setting activity:", error);
+                    alert("Error setting activity.");
+                });
+        }
 
         // Set up the EEG graph with Chart.js
         const ctx = document.getElementById("eegChart").getContext("2d");
@@ -53,3 +95,4 @@
     </script>
 </body>
 </html>
+
